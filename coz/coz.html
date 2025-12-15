@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capture of Zones | Tactical Warfare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+    --c-bg: #262526;       
+    --c-text: #F2EBDC;     
+    --c-dim: #8C7C6D;      
+    --c-accent: #D94032;   
+    --c-dark-accent: #8C2323; 
+    --c-black: #0f0f0f;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'VT323', monospace;
+    overflow-x: hidden;
+    font-size: 1.3rem;
+    position: relative;
+    line-height: 1.5;
+}
+
+.film-grain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 999;
+}
+
+.film-grain::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px);
+    background-size: 100% 4px;
+    pointer-events: none;
+}
+
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 50%, rgba(10, 10, 10, 0.8) 100%);
+    z-index: 998;
+    pointer-events: none;
+}
+
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--c-dim);
+    opacity: 0;
+    animation: floatUp 10s infinite linear;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
+    20% { opacity: 0.5; }
+    80% { opacity: 0.3; }
+    100% { transform: translateY(-10vh) translateX(20px) rotate(45deg); opacity: 0; }
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+header {
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: center;
+    text-align: center;
+    margin-bottom: 4rem;
+    position: relative;
+    border-bottom: 2px solid var(--c-dim);
+    padding-top: 8rem; 
+    padding-bottom: 2rem;
+}
+
+.back-btn-container {
+    position: absolute;
+    top: 2rem; /* Трохи відсунув кнопку від самого краю */
+    left: 0;
+    z-index: 20;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    color: var(--c-dim);
+    text-decoration: none;
+    font-size: 1.4rem;
+    background: transparent;
+    border: 1px solid var(--c-dim);
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.back-btn:hover {
+    color: var(--c-text);
+    border-color: var(--c-accent);
+    background: rgba(140, 35, 35, 0.1);
+}
+
+.logo-img {
+    width: 180px;
+    height: 180px;
+    border: 4px solid var(--c-dim);
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    margin-bottom: 2rem;
+    background: #000;
+    border-radius: 0; 
+}
+
+h1 {
+    font-size: 4rem;
+    color: var(--c-accent);
+    text-transform: uppercase;
+    text-shadow: 4px 4px 0px rgba(0,0,0,0.8);
+    line-height: 0.9;
+    margin-bottom: 0.5rem;
+    letter-spacing: 3px;
+}
+
+.sub-title {
+    font-size: 2rem;
+    color: var(--c-dim);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.hero-desc {
+    max-width: 700px;
+    font-size: 1.4rem;
+    color: var(--c-text);
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px #000;
+    opacity: 0.9;
+}
+
+.cta-btn {
+    display: inline-block;
+    background: var(--c-dark-accent);
+    color: var(--c-text);
+    font-size: 1.8rem;
+    padding: 1rem 3rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: 2px solid var(--c-accent);
+    box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
+    transition: all 0.2s;
+    margin-top: 1rem;
+}
+
+.cta-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+    background: var(--c-accent);
+}
+
+.cta-btn:active {
+    transform: translateY(6px);
+    box-shadow: 0 0 0 rgba(0,0,0,0.5);
+}
+
+section {
+    margin-bottom: 5rem;
+    background: rgba(38, 37, 38, 0.6);
+    border-left: 4px solid var(--c-dim);
+    padding: 2rem;
+    position: relative;
+}
+
+.section-header {
+    color: var(--c-accent);
+    font-size: 2.5rem;
+    border-bottom: 2px dashed var(--c-dim);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+p {
+    margin-bottom: 1.2rem;
+    color: var(--c-text);
+}
+
+.highlight {
+    color: var(--c-accent);
+    font-weight: bold;
+}
+
+.alert-box {
+    border: 2px solid var(--c-accent);
+    background: rgba(140, 35, 35, 0.15);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.alert-title {
+    color: var(--c-accent);
+    font-weight: bold;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+}
+
+.alert-title::before {
+    content: "WARNING";
+    display: inline-block;
+    background: var(--c-accent);
+    color: #fff;
+    padding: 0 10px;
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.feature-card {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--c-dim);
+    padding: 1.5rem;
+    transition: transform 0.3s;
+}
+
+.feature-card:hover {
+    border-color: var(--c-accent);
+    transform: translateY(-5px);
+}
+
+.feature-card h3 {
+    color: var(--c-text);
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--c-dim);
+    padding-bottom: 0.5rem;
+}
+
+.feature-card ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.feature-card li {
+    margin-bottom: 0.8rem;
+    position: relative;
+    padding-left: 1.5rem;
+    color: #ccc;
+    font-size: 1.1rem;
+}
+
+.feature-card li::before {
+    content: "■";
+    position: absolute;
+    left: 0;
+    color: var(--c-accent);
+    font-size: 0.8rem;
+    top: 5px;
+}
+
+.command-block {
+    background: #1a1a1a;
+    border: 1px solid var(--c-dim);
+    padding: 1rem;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 1rem;
+    color: #ccc;
+    font-size: 1rem;
+    overflow-x: auto;
+}
+
+.command-cmd {
+    color: var(--c-accent);
+    font-weight: bold;
+}
+
+.faq-item {
+    margin-bottom: 1.5rem;
+}
+
+.faq-q {
+    font-size: 1.4rem;
+    color: var(--c-text);
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.faq-a {
+    color: var(--c-dim);
+    border-left: 2px solid var(--c-dim);
+    padding-left: 1rem;
+}
+
+.credits-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.credit-item {
+    text-align: center;
+    border: 1px solid var(--c-dim);
+    padding: 1.5rem;
+    min-width: 250px;
+    background: rgba(0,0,0,0.2);
+}
+
+.credit-role {
+    color: var(--c-dim);
+    text-transform: uppercase;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.credit-name {
+    color: var(--c-text);
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+}
+
+.social-tiny {
+    display: block;
+    font-size: 1rem;
+    color: var(--c-accent);
+    text-decoration: none;
+    margin-bottom: 5px;
+}
+
+.social-tiny:hover {
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+    padding: 3rem 0;
+    color: var(--c-dim);
+    font-size: 1rem;
+    border-top: 1px solid var(--c-dim);
+    background: #1a1a1a;
+    margin-top: 4rem;
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 3rem; }
+    .sub-title { font-size: 1.5rem; }
+    .container { padding: 1rem; }
+    .cta-btn { font-size: 1.4rem; padding: 1rem 2rem; }
+    header { min-height: auto; padding-top: 6rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="film-grain"></div>
+<div class="vignette"></div>
+<div class="particles" id="particles"></div>
+
+<div class="container">
+    
+    <header>
+        <div class="back-btn-container">
+            <a href="https://vinlanx.github.io/vinlanx/" class="back-btn">&lt; Return to Base</a>
+        </div>
+
+        <img src="https://media.forgecdn.net/avatars/thumbnails/1497/401/256/256/638972740880265214.jpg" alt="Capture of Zones Logo" class="logo-img">
+        
+        <h1>Capture of Zones</h1>
+        <div class="sub-title">Secure. Hold. Dominate.</div>
+        
+        <p class="hero-desc">
+            This mod allows you to create strategic points and capture them in a team-based environment. 
+        </p>
+
+        <div class="alert-box" style="max-width: 800px; margin-top: 2rem;">
+            <div class="alert-title">Compatibility Protocol</div>
+            <p>If you want to play with <strong>Lightman’s Currency</strong>, you must download version <span class="highlight">2.2.6.4</span>.</p>
+            <p style="font-size: 1rem; opacity: 0.8;">Newer or older versions may cause critical conflicts. This notice is relevant for mod version 0.1.7.</p>
+        </div>
+        
+        <a href="https://www.curseforge.com/minecraft/mc-mods/capture-of-zones" target="_blank" class="cta-btn">
+            Download on CurseForge
+        </a>
+    </header>
+
+    <section id="about">
+        <h2 class="section-header">Operational Overview</h2>
+        <p>
+            Capture Zones introduces a streamlined team-based point-capturing mechanic to your Minecraft world.
+            Players assigned to the <span class="highlight">Blue</span> and <span class="highlight">Red</span> teams fight for control over designated zones.
+        </p>
+        <p>
+            Progress bars shift while team members stand inside the perimeter. If a zone is left empty, it returns to a neutral state. If the opposing team dominates the area, ownership flips.
+        </p>
+        <p>
+            Additionally, coin rewards can be integrated via the <strong>Lightman’s Currency</strong> mod.
+        </p>
+    </section>
+
+    <section id="features">
+        <h2 class="section-header">Tactical Assets</h2>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Core Mechanics</h3>
+                <ul>
+                    <li><strong>Custom Zones:</strong> Rectangular areas with adjustable width, length, height, and capture duration.</li>
+                    <li><strong>Smart Detection:</strong> Teams with names containing "blue" or "red" are automatically recognized. All others are Neutral (grey).</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>Visual Feedback</h3>
+                <ul>
+                    <li><strong>HUD System:</strong> Animated capture progress bars and a toggleable list of all active points.</li>
+                    <li><strong>Atmosphere:</strong> Soft dust particles surround active zones, coupled with distinct sound effects when ownership changes.</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>Administration</h3>
+                <ul>
+                    <li><strong>OP Tools:</strong> Create, edit, delete, and silently teleport to points.</li>
+                    <li><strong>Economic Incentives:</strong> Optional automatic coin payouts to the controlling team (requires Lightman's Currency).</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-to-play">
+        <h2 class="section-header">Field Manual</h2>
+        <p><strong>1. Establish Teams:</strong> The admin must create teams using vanilla commands. The names are case-insensitive but must contain the keywords.</p>
+        <div class="command-block">/team add RedTeam "Red Army"<br>/team add BlueTeam "Blue Defenders"</div>
+        
+        <p><strong>2. Engage:</strong> Players from Red/Blue stand inside zones to push progress.</p>
+        
+        <p><strong>3. Conquer:</strong> When fully captured, the zone flips color and a sound plays. If enabled, the owning team receives periodic rewards scaled by the number of zones controlled.</p>
+
+        <h3 style="margin-top: 2rem; color: var(--c-accent);">Keybinds</h3>
+        <ul style="list-style: none; margin-top: 0.5rem;">
+            <li><span class="highlight">=</span> : Toggle Points List HUD</li>
+            <li><span class="highlight">I</span> : Open Info Screen</li>
+        </ul>
+    </section>
+
+    <section id="commands">
+        <h2 class="section-header">Command Terminal</h2>
+        <p><em>Requires OP Permission Level ≥ 2</em></p>
+
+        <div class="command-block">
+            <span class="command-cmd">/setpoint &lt;id&gt; &lt;w&gt; &lt;l&gt; &lt;time&gt;</span>
+            <br>Create a point at your position (ID: 1-20, W/L: 1-150, Time: 1-600s).
+        </div>
+
+        <div class="command-block">
+            <span class="command-cmd">/pointedit &lt;id&gt; &lt;w&gt; &lt;l&gt; &lt;time&gt;</span>
+            <br>Edit an existing point's parameters.
+        </div>
+
+        <div class="command-block">
+            <span class="command-cmd">/delpoint &lt;id&gt;</span>
+            <br>Delete the specified point.
+        </div>
+
+        <div class="command-block">
+            <span class="command-cmd">/listpoints</span>
+            <br>Open the in-game management HUD with quick actions (Teleport/Delete).
+        </div>
+
+        <div class="command-block">
+            <span class="command-cmd">/capturestatus &lt;stop|resume&gt;</span>
+            <br>Global pause or resume of capture progression.
+        </div>
+
+        <div class="command-block">
+            <span class="command-cmd">/lcprofitstatus &lt;enable|disable&gt;</span>
+            <br>Toggle Lightman's Currency coin rewards.
+        </div>
+
+        <div class="command-block">
+            <span class="command-cmd">/lcpointprofitedit &lt;coins&gt; &lt;seconds&gt;</span>
+            <br>Set reward amount and payout interval.
+        </div>
+    </section>
+
+    <section id="requirements">
+        <h2 class="section-header">System Requirements</h2>
+        <ul style="list-style: none; padding-left: 1rem; border-left: 2px solid var(--c-dim);">
+            <li><strong>Forge:</strong> 47.4.0</li>
+            <li><strong>Dependency:</strong> Cloth Config</li>
+            <li><strong>Optional:</strong> Lightman's Currency (for economy features)</li>
+        </ul>
+        <p style="margin-top: 1rem;">
+            <span class="highlight">Config:</span> Access via Mod List > Cloth Config. Option to toggle "Show all points on HUD".
+        </p>
+    </section>
+
+    <section id="faq">
+        <h2 class="section-header">F.A.Q.</h2>
+        
+        <div class="faq-item">
+            <div class="faq-q">Q: How do I set teams?</div>
+            <div class="faq-a">A: Use vanilla scoreboard teams. Any team name containing "blue" or "red" is treated as such. Others are neutral.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-q">Q: How many points can I have?</div>
+            <div class="faq-a">A: Up to 20 per dimension (ID range 1–20).</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-q">Q: Can I disable captures temporarily?</div>
+            <div class="faq-a">A: Yes, use <code>/capturestatus stop</code> and <code>/capturestatus resume</code>.</div>
+        </div>
+    </section>
+
+    <section id="credits">
+        <h2 class="section-header">Acknowledgments</h2>
+        <div class="credits-container">
+            <div class="credit-item">
+                <div class="credit-role">Hud and Design</div>
+                <div class="credit-name">Village_</div>
+                <a href="https://linktr.ee/Village_LSC" target="_blank" class="social-tiny">🔗 linktr.ee/Village_LSC</a>
+            </div>
+
+            <div class="credit-item">
+                <div class="credit-role">Special Thanks</div>
+                <div class="credit-name">Lightman's Currency Team</div>
+                <span class="social-tiny">For integration support</span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Vinlanx. All rights reserved.</p>
+        <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.5;">Not affiliated with Mojang Studios.</p>
+    </footer>
+
+</div>
+
+<script>
+    const particleContainer = document.getElementById('particles');
+    const particleCount = 30;
+
+    for (let i = 0; i < particleCount; i++) {
+        let p = document.createElement('div');
+        p.classList.add('particle');
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.animationDuration = (Math.random() * 8 + 5) + 's';
+        p.style.animationDelay = (Math.random() * 5) + 's';
+        
+        let size = Math.random() * 4 + 2;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        
+        const colors = ['#8C7C6D', '#D94032', '#8C2323'];
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        
+        particleContainer.appendChild(p);
+    }
+</script>
+
+</body>
+</html>

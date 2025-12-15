@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gunfire Overhaul | Echoes of the Battlefield</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+    --c-bg: #202540;
+    --c-panel: #3D4F73;
+    --c-text: #F2AC57;
+    --c-accent: #F26430;
+    --c-danger: #BF2424;
+    --c-black: #0a0c14;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'VT323', monospace;
+    overflow-x: hidden;
+    font-size: 1.3rem;
+    position: relative;
+    line-height: 1.4;
+}
+
+
+.video-center {
+    display: flex;
+    justify-content: center;
+}
+
+.video-frame {
+    width: 70%;
+    max-width: 800px;
+    aspect-ratio: 16 / 9;
+    border: 3px solid var(--c-panel);
+    box-shadow: 10px 10px 0 rgba(0,0,0,0.4);
+    background: #000;
+    overflow: hidden;
+}
+
+.video-frame iframe {
+
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+
+.film-grain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 999;
+}
+
+.film-grain::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 0, 0, 0.2) 1px, rgba(0, 0, 0, 0.2) 2px);
+    background-size: 100% 4px;
+    pointer-events: none;
+}
+
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 60%, rgba(5, 6, 15, 0.9) 100%);
+    z-index: 998;
+    pointer-events: none;
+}
+
+.embers {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.ember {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: var(--c-accent);
+    box-shadow: 0 0 10px var(--c-danger);
+    opacity: 0;
+    animation: rise 8s infinite linear;
+}
+
+@keyframes rise {
+    0% { transform: translateY(110vh) translateX(0); opacity: 0; }
+    20% { opacity: 0.8; }
+    80% { opacity: 0.6; }
+    100% { transform: translateY(-10vh) translateX(50px); opacity: 0; }
+}
+
+ 
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+ 
+
+header {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+	padding-top: 8rem;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 4rem;
+    position: relative;
+}
+
+.back-btn-container {
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    z-index: 20;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    color: var(--c-panel);
+    text-decoration: none;
+    font-size: 1.5rem;
+    background: transparent;
+    border: 2px solid var(--c-panel);
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.back-btn:hover {
+    color: var(--c-text);
+    border-color: var(--c-text);
+    background: rgba(61, 79, 115, 0.3);
+    box-shadow: 0 0 15px rgba(242, 172, 87, 0.2);
+}
+
+.logo-img {
+    width: 180px;
+    height: 180px;
+    border: 4px solid var(--c-danger);
+    box-shadow: 0 0 30px rgba(191, 36, 36, 0.4);
+    margin-bottom: 2rem;
+    image-rendering: pixelated;
+    background: #000;
+}
+
+h1 {
+    font-size: 4rem;
+    color: var(--c-danger);
+    text-transform: uppercase;
+    text-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+    line-height: 0.9;
+    margin-bottom: 0.5rem;
+    letter-spacing: 2px;
+}
+
+.sub-title {
+    font-size: 2rem;
+    color: var(--c-accent);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hero-desc {
+    max-width: 700px;
+    font-size: 1.4rem;
+    color: #cbd5e1;
+    margin-bottom: 3rem;
+    text-shadow: 1px 1px 2px #000;
+}
+
+.cta-btn {
+    display: inline-block;
+    background: var(--c-danger);
+    color: #fff;
+    font-size: 1.8rem;
+    padding: 1rem 3rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: 4px solid #8a1c1c;
+    box-shadow: 0 10px 0 rgba(0,0,0,0.5);
+    transition: all 0.2s;
+    animation: pulse 3s infinite;
+}
+
+.cta-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 8px 0 rgba(0,0,0,0.5);
+    background: #d63333;
+}
+
+.cta-btn:active {
+    transform: translateY(10px);
+    box-shadow: 0 0 0 rgba(0,0,0,0.5);
+}
+
+ 
+
+section {
+    margin-bottom: 6rem;
+    background: rgba(32, 37, 64, 0.8);
+    border: 2px solid var(--c-panel);
+    padding: 2rem;
+    position: relative;
+    box-shadow: 10px 10px 0 rgba(0,0,0,0.3);
+}
+
+section::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 20px;
+    right: 20px;
+    height: 4px;
+    background: var(--c-panel);
+}
+
+.section-header {
+    color: var(--c-text);
+    font-size: 2.5rem;
+    border-bottom: 3px dashed var(--c-danger);
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+p {
+    margin-bottom: 1.2rem;
+    color: #d1d5db;
+}
+
+.highlight {
+    color: var(--c-accent);
+}
+
+ 
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.feature-card {
+    background: rgba(0,0,0,0.3);
+    border-left: 4px solid var(--c-accent);
+    padding: 1.5rem;
+    transition: transform 0.3s;
+}
+
+.feature-card:hover {
+    background: rgba(242, 100, 48, 0.1);
+    transform: translateX(5px);
+}
+
+.feature-card h3 {
+    color: var(--c-text);
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.feature-card ul {
+    list-style: none;
+    padding-left: 0.5rem;
+}
+
+.feature-card li {
+    margin-bottom: 0.8rem;
+    position: relative;
+    padding-left: 1.5rem;
+    color: #ccc;
+    font-size: 1.1rem;
+}
+
+.feature-card li::before {
+    content: "►";
+    position: absolute;
+    left: 0;
+    color: var(--c-danger);
+    font-size: 0.8rem;
+    top: 4px;
+}
+
+ 
+
+.status-list li {
+    background: rgba(17, 17, 17, 0.5);
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--c-panel);
+    display: flex;
+    align-items: center;
+}
+
+.status-icon {
+    margin-right: 10px;
+}
+
+.alert-box {
+    border: 2px solid var(--c-danger);
+    background: rgba(191, 36, 36, 0.1);
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.alert-title {
+    color: var(--c-danger);
+    font-weight: bold;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+}
+
+.alert-title::before {
+    content: "!";
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background: var(--c-danger);
+    color: #fff;
+    text-align: center;
+    line-height: 30px;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+ 
+
+.credits-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.credit-item {
+    text-align: center;
+    border: 1px solid var(--c-panel);
+    padding: 1.5rem;
+    min-width: 250px;
+    background: rgba(0,0,0,0.2);
+}
+
+.credit-role {
+    color: var(--c-panel);
+    text-transform: uppercase;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.credit-name {
+    color: var(--c-text);
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+}
+
+.social-tiny {
+    display: block;
+    font-size: 1rem;
+    color: var(--c-accent);
+    text-decoration: none;
+    margin-bottom: 5px;
+}
+
+.social-tiny:hover {
+    text-decoration: underline;
+}
+
+ 
+
+footer {
+    text-align: center;
+    padding: 3rem 0;
+    color: var(--c-panel);
+    font-size: 1rem;
+    border-top: 1px solid var(--c-panel);
+    background: #151828;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(191, 36, 36, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(191, 36, 36, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(191, 36, 36, 0); }
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 2.8rem; }
+    .sub-title { font-size: 1.5rem; }
+    .container { padding: 1rem; }
+    .cta-btn { font-size: 1.4rem; padding: 1rem 2rem; }
+    .back-btn-container { position: relative; top: 0; margin-bottom: 2rem; align-self: flex-start; }
+    header { min-height: auto; padding-top: 2rem; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="film-grain"></div>
+<div class="vignette"></div>
+<div class="embers" id="embers"></div>
+
+<div class="container">
+    
+    <header>
+        <div class="back-btn-container">
+            <a href="https://vinlanx.github.io/vinlanx/" class="back-btn">&lt; Return to Base</a>
+        </div>
+
+        <img src="https://media.forgecdn.net/avatars/thumbnails/1413/965/256/256/638916261373205502.png" alt="Gunfire Overhaul Logo" class="logo-img">
+        
+        <h1>Gunfire Overhaul</h1>
+        <div class="sub-title">Echoes of the Battlefield</div>
+        
+        <p class="hero-desc">
+            An add-on for many weapon mods that adds realistic distant gunfire and artillery sounds, creating echo effects and a deeply immersive battlefield atmosphere.
+        </p>
+        
+        <a href="https://www.curseforge.com/minecraft/mc-mods/gunfire-overhaul-echoes-of-the-battlefield" target="_blank" class="cta-btn">
+            Download on CurseForge
+        </a>
+    </header>
+	
+<section id="media">
+    <h2 class="section-header">Video</h2>
+
+    <p>
+        Real in-game sound demonstrations recorded directly from gameplay.
+    </p>
+   <div class="video-center">
+    <div class="video-frame" style="margin-bottom: 2rem;">
+        <iframe 
+            src="https://www.youtube.com/embed/9LtfKGV55aQ"
+            title="Gunfire Overhaul Demo 1"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+        </iframe>
+    </div>
+   </div>
+
+   <div class="video-center"> 
+    <div class="video-frame" style="margin-bottom: 2rem;">
+        <iframe 
+            src="https://www.youtube.com/embed/Z8dZiXVEmxw"
+            title="Gunfire Overhaul Demo 2"
+            allowfullscreen>
+        </iframe>
+    </div>
+</div>
+ <div class="video-center"> 
+    <div class="video-frame">
+        <iframe 
+            src="https://www.youtube.com/embed/5fhNgKLXxlM"
+            title="Gunfire Overhaul Demo 3"
+            allowfullscreen>
+        </iframe>
+    </div>
+  </div>
+</section>
+
+
+
+    <section id="about">
+        <h2 class="section-header">Mission Briefing</h2>
+        <p>
+            Gunfire Overhaul: Echoes of the Battlefield is both a standalone mod and an integration add-on. It completely rethinks the soundscape of combat in Minecraft.
+        </p>
+        <p>
+            As a <span class="highlight">standalone mod</span>, it fills the world with ambient battle sounds. 
+            As an <span class="highlight">add-on</span>, it integrates with popular weapon mods, replacing standard gunshot sounds with dynamic and realistic ones that change depending on distance, caliber, and environment.
+        </p>
+        <div style="margin-top: 2rem; border: 1px solid var(--c-accent); padding: 1rem; color: var(--c-accent); display: inline-block;">
+            ⚠️ REQUIRES: Cloth Config API
+        </div>
+    </section>
+
+    <section id="features">
+        <h2 class="section-header">Operational Capabilities</h2>
+        <p style="opacity: 0.7;">Current Version: 0.0.6 Alpha</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Dynamic Sound</h3>
+                <ul>
+                    <li><strong>Distance Reality:</strong> From a loud shot up close to a distant, muffled echo up to 3 kilometers away.</li>
+                    <li><strong>Caliber Physics:</strong> A pistol shot and a sniper rifle shot sound completely different with unique audio profiles.</li>
+                    <li><strong>Speed of Sound:</strong> Visuals first, audio later. Sound waves travel at realistic speeds.</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>Battlefield Atmosphere</h3>
+                <ul>
+                    <li><strong>Ambient Warfare:</strong> Random gunshot sounds are generated around the player, simulating a nearby conflict.</li>
+                    <li><strong>Audio Scenarios:</strong> Everything from single shots to short bursts and sustained automatic fire.</li>
+                    <li><strong>Weapon Variety:</strong> Simulation of varying power, from pistols to heavy machine guns.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="compatibility">
+        <h2 class="section-header">Compatibility & Support</h2>
+        <p>Gunfire Overhaul is actively developed to support major weapon mods. Current confirmed support:</p>
+        
+        <ul class="status-list" style="list-style: none; padding: 0; max-width: 500px;">
+            <li><span class="status-icon">✅</span> TaCZ (tested version 1.1.6-hotfix)</li>
+            <li><span class="status-icon">✅</span> SuperB Warfare (tested version 0.8.8-hotfix)</li>
+			<li><span class="status-icon">✅</span> Create: Big Cannons  (tested version 5.9.1)</li>
+        </ul>
+        <p style="font-size: 0.9rem; margin-top: 1rem; opacity: 0.7;">
+            *If you notice shots from a supported mod missing effects, please report it.
+        </p>
+    </section>
+
+    <section id="troubleshooting">
+        <h2 class="section-header">Troubleshooting</h2>
+        
+        <div class="alert-box">
+            <div class="alert-title">Critical Errors / Crashes</div>
+            <p>If you experience crashes upon launch:</p>
+            <ul style="padding-left: 20px;">
+                <li style="margin-bottom: 10px;"><strong>Check Forge Version:</strong> Ensure you are using the <em>recommended</em> Forge build for your MC version (47.4.0)</li>
+                <li><strong>Mod Conflicts:</strong> Try running the game with only Gunfire Overhaul and its dependencies. Add other mods back one by one to identify conflicts.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="credits">
+        <h2 class="section-header">Acknowledgments</h2>
+        <div class="credits-container">
+            <div class="credit-item">
+                <div class="credit-role">Logo Design</div>
+                <div class="credit-name">Village_</div>
+                <a href="https://linktr.ee/Village_LSC" target="_blank" class="social-tiny">🔗 linktr.ee/Village_LSC</a>
+            </div>
+
+            <div class="credit-item">
+                <div class="credit-role">Profile Picture</div>
+                <div class="credit-name">flowey</div>
+                <a href="https://twitter.com/floweyWAV" target="_blank" class="social-tiny">🐦 @floweyWAV</a>
+                <a href="https://youtube.com/@flowey.6344" target="_blank" class="social-tiny">▶️ @flowey.6344</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Vinlanx. All rights reserved.</p>
+        <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.5;">Not affiliated with Mojang Studios.</p>
+    </footer>
+
+</div>
+
+<script>
+    const emberContainer = document.getElementById('embers');
+    const emberCount = 40;
+
+    for (let i = 0; i < emberCount; i++) {
+        let e = document.createElement('div');
+        e.classList.add('ember');
+        e.style.left = Math.random() * 100 + 'vw';
+        e.style.animationDuration = (Math.random() * 5 + 3) + 's';
+        e.style.animationDelay = (Math.random() * 5) + 's';
+        
+        let size = Math.random() * 3 + 1;
+        e.style.width = size + 'px';
+        e.style.height = size + 'px';
+        
+        emberContainer.appendChild(e);
+    }
+</script>
+
+</body>
+</html>
