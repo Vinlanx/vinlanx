@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vinlanx | Mod Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+--c-dark-green: #2e3b1a;
+--c-green: #465928;
+--c-olive: #7C8C03;
+--c-gold: #D9B26A;
+--c-brown: #8C7851;
+--c-beige: #D9C8B4;
+--c-black: #111;
+}
+
+* {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background-color: var(--c-dark-green);
+        color: var(--c-beige);
+        font-family: 'VT323', monospace;
+        overflow-x: hidden;
+        font-size: 1.2rem;
+        position: relative;
+    }
+
+    .film-grain {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        background: rgba(18, 16, 16, 0.1);
+        z-index: 999;
+    }
+
+    .film-grain::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px);
+        background-size: 100% 4px;
+        pointer-events: none;
+    }
+
+    .vignette {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.8) 100%);
+        z-index: 998;
+        pointer-events: none;
+    }
+
+    .particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: var(--c-gold);
+        opacity: 0.3;
+        animation: floatUp 10s infinite linear;
+    }
+
+    @keyframes floatUp {
+        0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+        50% { opacity: 0.6; }
+        100% { transform: translateY(-10vh) translateX(20px); opacity: 0; }
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+
+    header {
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        position: relative;
+    }
+
+    .avatar-container {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid var(--c-gold);
+        box-shadow: 0 0 20px rgba(217, 178, 106, 0.3);
+        object-fit: cover;
+        animation: pulse 4s infinite ease-in-out;
+    }
+
+    .character-gif {
+        position: absolute;
+        top: -110px;
+        right: -100px;
+        width: 200px;
+        height: auto;
+        image-rendering: pixelated;
+        filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+        transform: scaleX(-1);
+    }
+
+    h1 {
+        font-size: 5rem;
+        color: var(--c-gold);
+        text-shadow: 4px 4px var(--c-brown);
+        margin-bottom: 0.5rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .subtitle {
+        font-size: 1.8rem;
+        color: var(--c-beige);
+        margin-bottom: 2rem;
+        opacity: 0.8;
+        background: rgba(0,0,0,0.3);
+        padding: 5px 15px;
+        border-radius: 4px;
+    }
+
+    .scroll-down {
+        position: absolute;
+        bottom: 30px;
+        animation: bounce 2s infinite;
+        color: var(--c-gold);
+        font-size: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 3rem;
+        color: var(--c-olive);
+        border-bottom: 4px solid var(--c-brown);
+        display: inline-block;
+        margin-bottom: 3rem;
+        padding-right: 20px;
+        text-shadow: 2px 2px 0 #000;
+    }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2.5rem;
+        margin-bottom: 4rem;
+    }
+
+    .card {
+        background: var(--c-beige);
+        border: 4px solid var(--c-brown);
+        padding: 1.5rem;
+        color: #2a2a2a;
+        position: relative;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 10px 10px 0 rgba(0,0,0,0.4);
+        display: flex;
+        flex-direction: column;
+        opacity: 0; 
+        transform: translateY(30px);
+    }
+
+    .card.visible {
+        animation: fadeUp 0.6s forwards ease-out;
+    }
+
+    .card:hover {
+        transform: translate(-5px, -5px);
+        box-shadow: 15px 15px 0 rgba(0,0,0,0.5);
+        z-index: 2;
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        border-bottom: 2px dashed var(--c-brown);
+        padding-bottom: 1rem;
+    }
+
+    .card-logo {
+        width: 80px;
+        height: 80px;
+        border: 2px solid var(--c-dark-green);
+        margin-right: 1rem;
+        background: #000;
+        object-fit: cover;
+        image-rendering: pixelated;
+    }
+
+    .card-title {
+        font-size: 1.8rem;
+        color: var(--c-dark-green);
+        line-height: 1;
+        font-weight: bold;
+    }
+
+    .card-desc {
+        font-size: 1.2rem;
+        line-height: 1.4;
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+        color: #3e3e3e;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        background: var(--c-brown);
+        color: var(--c-beige);
+        font-size: 0.9rem;
+        margin-top: 5px;
+        text-transform: uppercase;
+    }
+
+    .btn {
+        display: block;
+        background: var(--c-green);
+        color: var(--c-beige);
+        text-align: center;
+        padding: 10px;
+        text-decoration: none;
+        font-size: 1.4rem;
+        text-transform: uppercase;
+        border: 2px solid var(--c-dark-green);
+        transition: background 0.2s;
+        margin-top: auto;
+    }
+
+    .btn:hover {
+        background: var(--c-olive);
+        color: #fff;
+    }
+
+    .locked {
+        filter: grayscale(100%) opacity(0.8);
+        position: relative;
+    }
+
+    .stamp {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-15deg);
+        border: 4px solid #a94442;
+        color: #a94442;
+        font-size: 2rem;
+        padding: 5px 10px;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 2px;
+        opacity: 0.8;
+        pointer-events: none;
+        background: rgba(255,255,255,0.1);
+    }
+
+    .social-link {
+        display: inline-block;
+        margin-top: 2rem;
+        color: var(--c-gold);
+        font-size: 1.5rem;
+        text-decoration: none;
+        border: 2px solid var(--c-gold);
+        padding: 10px 20px;
+        transition: all 0.3s;
+        background: rgba(0,0,0,0.4);
+    }
+
+    .social-link:hover {
+        background: var(--c-gold);
+        color: var(--c-dark-green);
+    }
+
+    footer {
+        text-align: center;
+        padding: 4rem 0;
+        opacity: 0.6;
+        font-size: 1rem;
+    }
+
+    @keyframes fadeUp {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+        40% {transform: translateY(-10px);}
+        60% {transform: translateY(-5px);}
+    }
+
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(217, 178, 106, 0.4); }
+        70% { box-shadow: 0 0 0 20px rgba(217, 178, 106, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(217, 178, 106, 0); }
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3.5rem; }
+        .character-gif {
+            right: 50%;
+            transform: translateX(50%) scaleX(-1);
+            top: -140px;
+            width: 150px;
+        }
+        .avatar-container { margin-top: 30px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="film-grain"></div>
+<div class="vignette"></div>
+<div class="particles" id="particles"></div>
+<div style="margin-bottom: 20px;"></div>
+<div class="container">
+    <header>
+        <div class="avatar-container">
+            <img src="https://i.ibb.co/LDS671RL/Untitled-12-03-2025-09-04-36.gif" alt="Character" class="character-gif">
+            <img src="https://yt3.ggpht.com/stWdYVe892BfCzwJp3zyse6qeRWDNS6In6w8PQHCwD8UXLR0GI_T_GQaUJgoxSUbhqjscT4JIQ=s600-c-k-c0x00ffffff-no-rj-rp-mo" alt="Vinlanx Avatar" class="avatar">
+        </div>
+        
+        <h1>Vinlanx</h1>
+        <div class="subtitle">Minecraft Mod Developer</div>
+        
+        <a href="https://linktr.ee/Vinlanx" target="_blank" class="social-link">View Linktree</a>
+
+        <div class="scroll-down">
+            Scroll<br>▼
+        </div>
+    </header>
+<div style="margin-bottom: 200px;"></div>
+	
+	
+    <section id="projects">
+        <h2 class="section-title">Projects</h2>
+        
+        <div class="projects-grid">
+            
+            <div class="card">
+                <div class="card-header">
+                    <img src="https://media.forgecdn.net/avatars/thumbnails/1413/965/256/256/638916261373205502.png" alt="Gunfire Overhaul" class="card-logo">
+                    <div>
+                        <div class="card-title">Gunfire Overhaul</div>
+                        <div class="status-badge">Released</div>
+                    </div>
+                </div>
+                <p class="card-desc">
+                    Echoes of the Battlefield. An add-on for many weapon mods that adds realistic distant gunfire and artillery sounds, creating echo effects and a deeply immersive battlefield atmosphere.
+                </p>
+                <a href="https://www.curseforge.com/minecraft/mc-mods/gunfire-overhaul-echoes-of-the-battlefield" target="_blank" class="btn">View</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <img src="https://media.forgecdn.net/avatars/thumbnails/1413/964/256/256/638916261075580988.png" alt="Explosion Overhaul" class="card-logo">
+                    <div>
+                        <div class="card-title">Explosion Overhaul</div>
+                        <div class="status-badge">Active Dev</div>
+                    </div>
+                </div>
+                <p class="card-desc">
+                    A new level of destruction. Overhauls Minecraft explosions for realism. Unique sounds based on distance, tangible tremors, plasma sparks, and fire clouds. Experience destructive power like never before.
+                </p>
+                <a href="https://www.curseforge.com/minecraft/mc-mods/explosion-overhaul-a-new-level-of-destruction" target="_blank" class="btn">View</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <img src="https://media.forgecdn.net/avatars/thumbnails/1497/401/256/256/638972740880265214.jpg" alt="Capture Of Zones" class="card-logo">
+                    <div>
+                        <div class="card-title">Capture Of Zones</div>
+                        <div class="status-badge">Released</div>
+                    </div>
+                </div>
+                <p class="card-desc">
+                    Tactical utility mod. This framework allows you to create strategic points within your world and capture them, adding a layer of territory control to gameplay.
+                </p>
+                <a href="https://www.curseforge.com/minecraft/mc-mods/capture-of-zones" target="_blank" class="btn">View</a>
+            </div>
+
+            <div class="card locked">
+                <div class="stamp">In Development</div>
+                <div class="card-header">
+                    <div class="card-logo" style="background: #555; display:flex; align-items:center; justify-content:center; color:#888;">?</div>
+                    <div>
+                        <div class="card-title">Zone Conquest</div>
+                        <div class="status-badge" style="background: #333;">In Development</div>
+                    </div>
+                </div>
+                <p class="card-desc">
+                    Tactical Battles. The next evolution of zone control warfare. Information regarding this project is currently restricted. Prepare for deployment soon.
+                </p>
+                <span class="btn" style="background: #555; cursor: not-allowed; border-color: #333;">Access Denied</span>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Vinlanx. All rights reserved.</p>
+    </footer>
+</div>
+
+<script>
+    const particleContainer = document.getElementById('particles');
+    const particleCount = 30;
+
+    for (let i = 0; i < particleCount; i++) {
+        let p = document.createElement('div');
+        p.classList.add('particle');
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.animationDuration = (Math.random() * 10 + 5) + 's';
+        p.style.animationDelay = (Math.random() * 5) + 's';
+        particleContainer.appendChild(p);
+    }
+
+    const observerOptions = {
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.card').forEach(card => {
+        observer.observe(card);
+    });
+</script>
+</body>
+</html>
