@@ -31,6 +31,7 @@
         overflow-x: hidden;
         font-size: 1.2rem;
         position: relative;
+		zoom: 1.02;
     }
 
     .film-grain {
@@ -125,16 +126,21 @@
         animation: pulse 4s infinite ease-in-out;
     }
 
-    .character-gif {
-        position: absolute;
-        top: -110px;
-        right: -100px;
-        width: 200px;
-        height: auto;
-        image-rendering: pixelated;
-        filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
-        transform: scaleX(-1);
-    }
+.character-gif {
+    position: absolute;
+    top: 50%;
+    left: 40%;
+    width: 190px;
+    height: auto;
+
+    transform:
+        translate(-10%, -90%)
+        scaleX(-1);
+
+    image-rendering: pixelated;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+    pointer-events: none;
+}
 
     h1 {
         font-size: 5rem;
@@ -328,24 +334,26 @@
         100% { box-shadow: 0 0 0 0 rgba(217, 178, 106, 0); }
     }
 
-    @media (max-width: 768px) {
-        h1 { font-size: 3.5rem; }
-        .character-gif {
-            right: 50%;
-            transform: translateX(50%) scaleX(-1);
-            top: -140px;
-            width: 150px;
-        }
-        .avatar-container { margin-top: 30px; }
+@media (max-width: 768px) {
+    .character-gif {
+        width: 150px;
+        transform:
+            translate(-20%, -100%)
+            scaleX(-1);
     }
+	
+}
+
+
 </style>
 </head>
 <body>
 
+
 <div class="film-grain"></div>
 <div class="vignette"></div>
 <div class="particles" id="particles"></div>
-<div style="margin-bottom: 20px;"></div>
+<div style="margin-bottom: 10px;"></div>
 <div class="container">
     <header>
         <div class="avatar-container">
@@ -464,5 +472,6 @@
         observer.observe(card);
     });
 </script>
+
 </body>
 </html>
