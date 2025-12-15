@@ -98,15 +98,12 @@
         padding: 0 2rem;
         position: relative;
         z-index: 10;
-        display: flex;           /* Робимо контейнер флексом */
-        flex-direction: column;  /* Елементи йдуть зверху вниз */
+        display: flex;
+        flex-direction: column;
     }
 
-    /* --- ВИПРАВЛЕНИЙ HEADER --- */
     header {
-        /* min-height гарантує, що він займе мінімум весь екран */
         min-height: 89vh;
-        /* height: auto дозволяє йому рости, якщо контент не влазить */
         height: auto;
         
         display: flex;
@@ -119,7 +116,6 @@
         padding-top: 5vh;
         padding-bottom: 2vh;
         
-        /* Гарантуємо, що Header не сплющиться */
         flex-shrink: 0; 
     }
 
@@ -130,7 +126,7 @@
         justify-content: center;
         align-items: center;
         width: 100%;
-        padding-top: 2rem; /* Додатковий відступ зверху */
+        padding-top: 2rem;
     }
 
     .avatar-container {
@@ -168,7 +164,6 @@
         border-radius: 4px;
     }
 
-    /* --- НИЖНЯ ЗОНА (СЦЕНА) --- */
     .scene-container {
         position: relative;
         width: 100%;
@@ -176,7 +171,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-end;
-        margin-top: 50px; /* Мінімальний відступ від верхнього контенту */
+        margin-top: 50px;
         z-index: 5;
     }
 
@@ -227,12 +222,10 @@
         text-shadow: 1px 1px 0 #000;
     }
 
-    /* --- СЕКЦІЯ ПРОЕКТІВ --- */
-    /* Важливо: Це окремий блок, який йде СЛІДОМ за header */
     #projects {
         position: relative;
-        z-index: 20; /* Вище header, про всяк випадок */
-        padding-top: 4rem; /* Відступ від "підлоги" хедера */
+        z-index: 20;
+        padding-top: 4rem;
         background: transparent; 
         width: 100%;
     }
@@ -403,7 +396,6 @@
         100% { box-shadow: 0 0 0 0 rgba(217, 178, 106, 0); }
     }
 
-/* MEDIA QUERIES */
 @media (max-width: 900px) {
     h1 { font-size: 4rem; }
     .character-gif { width: 140px; }
@@ -419,7 +411,6 @@
     
     .social-link { padding: 8px 16px; font-size: 1.2rem; }
     
-    /* Додаткова безпека для маленьких екранів */
     header {
         padding-top: 3rem;
         padding-bottom: 3rem;
