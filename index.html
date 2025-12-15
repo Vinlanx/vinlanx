@@ -55,6 +55,44 @@
         background-size: 100% 4px;
         pointer-events: none;
     }
+	
+	.team-btn {
+        position: fixed; 
+        top: 30px;
+        right: 40px;
+        z-index: 2000;
+        
+        font-family: 'VT323', monospace;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        text-decoration: none;
+        letter-spacing: 2px;
+        
+        color: var(--c-gold);
+        border: 2px solid var(--c-gold);
+        background: rgba(17, 17, 17, 0.6); 
+        padding: 8px 24px;
+        
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .team-btn:hover {
+        background: var(--c-gold);
+        color: var(--c-dark-green);
+        box-shadow: 0 0 20px rgba(217, 178, 106, 0.6);
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 600px) {
+        .team-btn {
+            top: 15px;
+            right: 15px;
+            font-size: 1.2rem;
+            padding: 5px 15px;
+        }
+    }
+
 
     .vignette {
         position: fixed;
@@ -546,6 +584,6 @@
         observer.observe(card);
     });
 </script>
-
+<a href="team/team.html" class="team-btn">TEAM</a>
 </body>
 </html>

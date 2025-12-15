@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vinlanx | Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+    --c-dark-green: #2e3b1a;
+    --c-green: #465928;
+    --c-olive: #7C8C03;
+    --c-gold: #D9B26A;
+    --c-brown: #8C7851;
+    --c-beige: #D9C8B4;
+    --c-black: #111;
+
+    /* Village_ Palette */
+    --v-red: #A64149;
+    --v-pink: #F299B9;
+    --v-blue: #455D8C;
+    --v-light-blue: #B8C3D9;
+    --v-paper: #F2E0BD;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--c-dark-green);
+    color: var(--c-beige);
+    font-family: 'VT323', monospace;
+    overflow-x: hidden;
+    font-size: 1.2rem;
+    min-height: 100vh;
+}
+
+.film-grain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: rgba(18, 16, 16, 0.1);
+    z-index: 999;
+}
+
+.film-grain::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px);
+    background-size: 100% 4px;
+    pointer-events: none;
+}
+
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.8) 100%);
+    z-index: 998;
+    pointer-events: none;
+}
+
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--c-gold);
+    opacity: 0.3;
+    animation: floatUp 10s infinite linear;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    50% { opacity: 0.6; }
+    100% { transform: translateY(-10vh) translateX(20px); opacity: 0; }
+}
+
+/* Змінено позиціювання кнопки */
+.return-btn {
+    position: absolute; /* Тепер absolute відносно container */
+    top: 2rem;         /* Відступ зверху */
+    left: 0;           /* Вирівнювання по лівому краю контейнера */
+    z-index: 2000;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 2px;
+    color: var(--c-gold);
+    border: 2px solid var(--c-gold);
+    background: rgba(17, 17, 17, 0.6); 
+    padding: 8px 24px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.return-btn:hover {
+    background: var(--c-gold);
+    color: var(--c-dark-green);
+    box-shadow: 0 0 20px rgba(217, 178, 106, 0.6);
+    transform: translateY(-2px);
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 8rem 2rem 2rem 2rem; /* Збільшено верхній відступ, щоб кнопка влізла */
+    position: relative; /* Це важливо для absolute позиції кнопки */
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.page-title {
+    font-size: 4rem;
+    color: var(--c-gold);
+    text-shadow: 4px 4px var(--c-brown);
+    margin-bottom: 0.5rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    border-bottom: 4px solid var(--c-gold);
+    padding-bottom: 10px;
+    margin-bottom: 4rem;
+}
+
+.team-grid {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 3rem;
+}
+
+.card {
+    background: var(--c-beige);
+    border: 4px solid var(--c-brown);
+    padding: 0;
+    color: #2a2a2a;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 10px 10px 0 rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+    opacity: 0;
+    animation: fadeUp 0.8s forwards ease-out;
+}
+
+.card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 15px 15px 0 rgba(0,0,0,0.5);
+}
+
+.card.village-theme {
+    background: var(--v-paper);
+    border-color: var(--v-blue);
+}
+
+.card.village-theme .card-top {
+    background: var(--v-light-blue);
+    border-bottom: 2px dashed var(--v-blue);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.card.village-theme .card-logo {
+    border-color: var(--v-blue);
+    box-shadow: 5px 5px 0 rgba(69, 93, 140, 0.3);
+}
+
+.card-logo {
+    width: 100px;
+    height: 100px;
+    border: 3px solid var(--c-dark-green);
+    margin-right: 1.5rem;
+    background: #000;
+    object-fit: cover;
+    image-rendering: pixelated;
+    flex-shrink: 0;
+}
+
+.info-block {
+    flex-grow: 1;
+}
+
+.name {
+    font-size: 2.5rem;
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.card.village-theme .name {
+    color: var(--v-blue);
+}
+
+.role {
+    font-size: 1.4rem;
+    background: var(--c-brown);
+    color: var(--c-beige);
+    display: inline-block;
+    padding: 2px 8px;
+    text-transform: uppercase;
+}
+
+.card.village-theme .role {
+    background: var(--v-red);
+    color: var(--v-paper);
+}
+
+.card-body {
+    padding: 1.5rem;
+    font-size: 1.3rem;
+    line-height: 1.5;
+    background: rgba(255,255,255,0.1);
+}
+
+.gratitude-box {
+    margin-top: 1rem;
+    border-left: 4px solid var(--c-gold);
+    padding-left: 1rem;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.card.village-theme .gratitude-box {
+    border-left-color: var(--v-red);
+    color: #333;
+}
+
+.action-area {
+    margin-top: auto;
+    padding: 1rem;
+    background: rgba(0,0,0,0.05);
+    border-top: 2px solid rgba(0,0,0,0.1);
+}
+
+.link-btn {
+    display: block;
+    width: auto; 
+    text-align: center;
+    padding: 12px;
+    font-size: 1.5rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    border: 2px solid transparent;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.card.village-theme .link-btn {
+    background: var(--v-blue);
+    color: var(--v-paper);
+    border-color: var(--v-blue);
+}
+
+.card.village-theme .link-btn:hover {
+    background: var(--v-red);
+    border-color: var(--v-red);
+    color: #fff;
+}
+
+.special-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 3rem;
+    opacity: 0.15;
+    transform: rotate(15deg);
+    pointer-events: none;
+    color: var(--v-red);
+    border: 4px solid var(--v-red);
+    padding: 0 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+    .return-btn {
+        font-size: 1.2rem;
+        padding: 5px 15px;
+    }
+    .container {
+        padding-top: 6rem;
+    }
+    .page-title {
+        font-size: 3rem;
+    }
+    .card-logo {
+        width: 80px;
+        height: 80px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="film-grain"></div>
+<div class="vignette"></div>
+<div class="particles" id="particles"></div>
+
+<!-- Кнопка переміщена всередину контейнера -->
+<div class="container">
+    <a href="../index.html" class="return-btn">
+        <span>◄</span> Return to Base
+    </a>
+
+    <h1 class="page-title">Personnel</h1>
+
+    <div class="team-grid">
+        <div class="card village-theme">
+            <div class="card-top">
+                <div class="special-badge">MVP</div>
+                <img src="https://ugc.production.linktr.ee/8ad07920-52f6-4b1d-878b-2c7733616527_photo-2025-07-19-23-07-04.jpeg?io=true&size=avatar-v3_0" alt="Village_" class="card-logo">
+                <div class="info-block">
+                    <div class="name">Village_</div>
+                    <div class="role">Lead Artist</div>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <p>The visionary behind the visual aesthetics. Responsible for textures, models, and the artistic direction that brings the mods to life.</p>
+                
+                <div class="gratitude-box">
+                    "Expressing boundless gratitude for the dedication and incredible talent. This project would not be the same without you."
+                </div>
+            </div>
+
+            <div class="action-area">
+                <a href="https://linktr.ee/Village_LSC" target="_blank" class="link-btn">View Artist Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const particleContainer = document.getElementById('particles');
+    const particleCount = 20;
+
+    for (let i = 0; i < particleCount; i++) {
+        let p = document.createElement('div');
+        p.classList.add('particle');
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.animationDuration = (Math.random() * 10 + 5) + 's';
+        p.style.animationDelay = (Math.random() * 5) + 's';
+        particleContainer.appendChild(p);
+    }
+</script>
+
+</body>
+</html>
