@@ -31,7 +31,6 @@
         overflow-x: hidden;
         font-size: 1.2rem;
         position: relative;
-		zoom: 1.02;
     }
 
     .film-grain {
@@ -96,19 +95,42 @@
     .container {
         max-width: 1100px;
         margin: 0 auto;
-        padding: 2rem;
+        padding: 0 2rem;
         position: relative;
         z-index: 10;
+        display: flex;           /* Робимо контейнер флексом */
+        flex-direction: column;  /* Елементи йдуть зверху вниз */
     }
 
+    /* --- ВИПРАВЛЕНИЙ HEADER --- */
     header {
-        height: 90vh;
+        /* min-height гарантує, що він займе мінімум весь екран */
+        min-height: 89vh;
+        /* height: auto дозволяє йому рости, якщо контент не влазить */
+        height: auto;
+        
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+        
+        position: relative;
+        padding-top: 5vh;
+        padding-bottom: 2vh;
+        
+        /* Гарантуємо, що Header не сплющиться */
+        flex-shrink: 0; 
+    }
+
+    .header-top-content {
+        flex: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        text-align: center;
-        position: relative;
+        width: 100%;
+        padding-top: 2rem; /* Додатковий відступ зверху */
     }
 
     .avatar-container {
@@ -126,22 +148,6 @@
         animation: pulse 4s infinite ease-in-out;
     }
 
-.character-gif {
-    position: absolute;
-    top: 50%;
-    left: 40%;
-    width: 190px;
-    height: auto;
-
-    transform:
-        translate(-10%, -90%)
-        scaleX(-1);
-
-    image-rendering: pixelated;
-    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
-    pointer-events: none;
-}
-
     h1 {
         font-size: 5rem;
         color: var(--c-gold);
@@ -149,6 +155,7 @@
         margin-bottom: 0.5rem;
         letter-spacing: 2px;
         text-transform: uppercase;
+        line-height: 1;
     }
 
     .subtitle {
@@ -161,12 +168,73 @@
         border-radius: 4px;
     }
 
-    .scroll-down {
+    /* --- НИЖНЯ ЗОНА (СЦЕНА) --- */
+    .scene-container {
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        margin-top: 50px; /* Мінімальний відступ від верхнього контенту */
+        z-index: 5;
+    }
+
+    .character-gif {
+        width: 170px;
+        height: auto;
+        transform: scaleX(-1);
+        image-rendering: pixelated;
+        filter: 
+            brightness(0.95)
+            drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+        pointer-events: none;
+        margin-bottom: -24px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .platform-line {
+        width: 300px;
+        height: 5px;
+        background-color: var(--c-gold);
+        box-shadow: 0 0 15px rgba(217, 178, 106, 0.6);
+        position: relative;
+        z-index: 1;
+        border-radius: 2px;
+    }
+    
+    .platform-line::before, .platform-line::after {
+        content: '';
         position: absolute;
-        bottom: 30px;
+        top: -3px;
+        width: 6px;
+        height: 10px;
+        background: var(--c-gold);
+        box-shadow: 0 0 5px rgba(217, 178, 106, 0.8);
+    }
+    .platform-line::before { left: 0; }
+    .platform-line::after { right: 0; }
+
+    .scroll-down {
+        margin-top: 15px;
         animation: bounce 2s infinite;
         color: var(--c-gold);
-        font-size: 1.5rem;
+        font-size: 1.4rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0.8;
+        text-shadow: 1px 1px 0 #000;
+    }
+
+    /* --- СЕКЦІЯ ПРОЕКТІВ --- */
+    /* Важливо: Це окремий блок, який йде СЛІДОМ за header */
+    #projects {
+        position: relative;
+        z-index: 20; /* Вище header, про всяк випадок */
+        padding-top: 4rem; /* Відступ від "підлоги" хедера */
+        background: transparent; 
+        width: 100%;
     }
 
     .section-title {
@@ -313,9 +381,10 @@
 
     footer {
         text-align: center;
-        padding: 4rem 0;
+        padding: 2rem 0;
         opacity: 0.6;
         font-size: 1rem;
+        margin-top: auto;
     }
 
     @keyframes fadeUp {
@@ -334,17 +403,28 @@
         100% { box-shadow: 0 0 0 0 rgba(217, 178, 106, 0); }
     }
 
-@media (max-width: 768px) {
-    .character-gif {
-        width: 150px;
-        transform:
-            translate(-20%, -100%)
-            scaleX(-1);
-    }
-	
+/* MEDIA QUERIES */
+@media (max-width: 900px) {
+    h1 { font-size: 4rem; }
+    .character-gif { width: 140px; }
+    .platform-line { width: 260px; }
 }
 
-
+@media (max-width: 600px) {
+    h1 { font-size: 3rem; }
+    .subtitle { font-size: 1.4rem; }
+    
+    .character-gif { width: 110px; margin-bottom: -6px; }
+    .platform-line { width: 200px; height: 3px; }
+    
+    .social-link { padding: 8px 16px; font-size: 1.2rem; }
+    
+    /* Додаткова безпека для маленьких екранів */
+    header {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+}
 </style>
 </head>
 <body>
@@ -353,25 +433,28 @@
 <div class="film-grain"></div>
 <div class="vignette"></div>
 <div class="particles" id="particles"></div>
-
+<div style="margin-bottom: 100px;"></div>
 <div class="container">
     <header>
-        <div class="avatar-container">
-            <img src="https://i.ibb.co/LDS671RL/Untitled-12-03-2025-09-04-36.gif" alt="Character" class="character-gif">
-            <img src="https://yt3.ggpht.com/stWdYVe892BfCzwJp3zyse6qeRWDNS6In6w8PQHCwD8UXLR0GI_T_GQaUJgoxSUbhqjscT4JIQ=s600-c-k-c0x00ffffff-no-rj-rp-mo" alt="Vinlanx Avatar" class="avatar">
+        <div class="header-top-content">
+            <div class="avatar-container">
+                <img src="https://yt3.ggpht.com/stWdYVe892BfCzwJp3zyse6qeRWDNS6In6w8PQHCwD8UXLR0GI_T_GQaUJgoxSUbhqjscT4JIQ=s600-c-k-c0x00ffffff-no-rj-rp-mo" alt="Vinlanx Avatar" class="avatar">
+            </div>
+            
+            <h1>Vinlanx</h1>
+            <div class="subtitle">Minecraft Mod Developer</div>
+            
+            <a href="https://linktr.ee/Vinlanx" target="_blank" class="social-link">View Linktree</a>
         </div>
-        
-        <h1>Vinlanx</h1>
-        <div class="subtitle">Minecraft Mod Developer</div>
-        
-        <a href="https://linktr.ee/Vinlanx" target="_blank" class="social-link">View Linktree</a>
 
-        <div class="scroll-down">
-            Scroll<br>▼
+        <div class="scene-container">
+            <img src="https://i.ibb.co/LDS671RL/Untitled-12-03-2025-09-04-36.gif" alt="Character" class="character-gif">
+            <div class="platform-line"></div>
+            <div class="scroll-down">
+                Scroll<br>▼
+            </div>
         </div>
     </header>
-<div style="margin-bottom: 200px;"></div>
-	
 	
     <section id="projects">
         <h2 class="section-title">Projects</h2>
