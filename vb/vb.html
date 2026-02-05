@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Velocity Blur | High Speed Immersion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+    /* Нова палітра кольорів */
+    --c-bg: #152B59;          /* Найтемніший синій (Фон) */
+    --c-text: #AEEBF2;        /* Найсвітліший блакитний (Текст) */
+    --c-dim: #2678BF;         /* Середній синій (Рамки, неактивне) */
+    --c-accent: #85D3F2;      /* Яскравий блакитний (Заголовки, акценти) */
+    --c-dark-accent: #1F4E8C; /* Темно-синій (Кнопки, підкладки) */
+    --c-black: #050b14;       /* Майже чорний для тіней */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'VT323', monospace;
+    overflow-x: hidden;
+    font-size: 1.3rem;
+    position: relative;
+    line-height: 1.5;
+}
+
+/* Ефекти плівки та віньєтки залишено для атмосфери */
+.film-grain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 999;
+}
+
+.film-grain::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px);
+    background-size: 100% 4px;
+    pointer-events: none;
+}
+
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 50%, rgba(5, 11, 20, 0.8) 100%);
+    z-index: 998;
+    pointer-events: none;
+}
+
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--c-dim);
+    opacity: 0;
+    animation: floatUp 10s infinite linear;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
+    20% { opacity: 0.5; }
+    80% { opacity: 0.3; }
+    100% { transform: translateY(-10vh) translateX(20px) rotate(45deg); opacity: 0; }
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+header {
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: center;
+    text-align: center;
+    margin-bottom: 4rem;
+    position: relative;
+    border-bottom: 2px solid var(--c-dim);
+    padding-top: 8rem; 
+    padding-bottom: 2rem;
+}
+
+.back-btn-container {
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    z-index: 20;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    color: var(--c-dim);
+    text-decoration: none;
+    font-size: 1.4rem;
+    background: transparent;
+    border: 1px solid var(--c-dim);
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.back-btn:hover {
+    color: var(--c-text);
+    border-color: var(--c-accent);
+    background: rgba(31, 78, 140, 0.2);
+}
+
+.logo-img {
+    width: 180px;
+    height: 180px;
+    border: 4px solid var(--c-dim);
+    box-shadow: 0 0 20px rgba(38, 120, 191, 0.3);
+    margin-bottom: 2rem;
+    background: #000;
+    border-radius: 0; 
+}
+
+h1 {
+    font-size: 4rem;
+    color: var(--c-accent);
+    text-transform: uppercase;
+    text-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+    line-height: 0.9;
+    margin-bottom: 0.5rem;
+    letter-spacing: 3px;
+}
+
+.sub-title {
+    font-size: 2rem;
+    color: var(--c-dim);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.hero-desc {
+    max-width: 700px;
+    font-size: 1.4rem;
+    color: var(--c-text);
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px #000;
+    opacity: 0.9;
+}
+
+.cta-btn {
+    display: inline-block;
+    background: var(--c-dark-accent);
+    color: var(--c-text);
+    font-size: 1.8rem;
+    padding: 1rem 3rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: 2px solid var(--c-accent);
+    box-shadow: 5px 5px 0 rgba(0,0,0,0.3);
+    transition: all 0.2s;
+    margin-top: 1rem;
+}
+
+.cta-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+    background: var(--c-accent);
+    color: var(--c-bg);
+}
+
+.cta-btn:active {
+    transform: translateY(6px);
+    box-shadow: 0 0 0 rgba(0,0,0,0.3);
+}
+
+section {
+    margin-bottom: 5rem;
+    background: rgba(21, 43, 89, 0.6);
+    border-left: 4px solid var(--c-dim);
+    padding: 2rem;
+    position: relative;
+}
+
+.section-header {
+    color: var(--c-accent);
+    font-size: 2.5rem;
+    border-bottom: 2px dashed var(--c-dim);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+p {
+    margin-bottom: 1.2rem;
+    color: var(--c-text);
+}
+
+.highlight {
+    color: var(--c-accent);
+    font-weight: bold;
+}
+
+.alert-box {
+    border: 2px solid var(--c-accent);
+    background: rgba(31, 78, 140, 0.3);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.alert-title {
+    color: var(--c-accent);
+    font-weight: bold;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+}
+
+.alert-title::before {
+    content: "INFO";
+    display: inline-block;
+    background: var(--c-accent);
+    color: var(--c-bg);
+    padding: 0 10px;
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.feature-card {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--c-dim);
+    padding: 1.5rem;
+    transition: transform 0.3s;
+}
+
+.feature-card:hover {
+    border-color: var(--c-accent);
+    transform: translateY(-5px);
+}
+
+.feature-card h3 {
+    color: var(--c-text);
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--c-dim);
+    padding-bottom: 0.5rem;
+}
+
+.feature-card ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.feature-card li {
+    margin-bottom: 0.8rem;
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--c-text);
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.feature-card li::before {
+    content: "►";
+    position: absolute;
+    left: 0;
+    color: var(--c-accent);
+    font-size: 0.8rem;
+    top: 5px;
+}
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 ratio */
+    height: 0;
+    overflow: hidden;
+    margin: 2rem 0;
+    border: 2px solid var(--c-dim);
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.config-img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    border: 2px solid var(--c-dim);
+    display: block;
+    margin: 1rem 0;
+    box-shadow: 5px 5px 0 rgba(0,0,0,0.3);
+}
+
+.faq-item {
+    margin-bottom: 1.5rem;
+}
+
+.faq-q {
+    font-size: 1.4rem;
+    color: var(--c-accent);
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.faq-a {
+    color: var(--c-text);
+    border-left: 2px solid var(--c-dim);
+    padding-left: 1rem;
+    opacity: 0.8;
+}
+
+footer {
+    text-align: center;
+    padding: 3rem 0;
+    color: var(--c-dim);
+    font-size: 1rem;
+    border-top: 1px solid var(--c-dim);
+    background: #0a152e;
+    margin-top: 4rem;
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 3rem; }
+    .sub-title { font-size: 1.5rem; }
+    .container { padding: 1rem; }
+    .cta-btn { font-size: 1.4rem; padding: 1rem 2rem; }
+    header { min-height: auto; padding-top: 6rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="film-grain"></div>
+<div class="vignette"></div>
+<div class="particles" id="particles"></div>
+
+<div class="container">
+    
+    <header>
+        <div class="back-btn-container">
+            <!-- Посилання залишено за замовчуванням, змініть за потреби -->
+            <a href="https://vinlanx.github.io/vinlanx/" class="back-btn">&lt; Return to Base</a>
+        </div>
+
+        <img src="https://media.forgecdn.net/avatars/thumbnails/1605/433/256/256/639036738598084663.png" alt="Velocity Blur Logo" class="logo-img">
+        
+        <h1>Velocity Blur</h1>
+        <div class="sub-title">Speed. Momentum. Focus.</div>
+        
+        <p class="hero-desc">
+            Velocity Blur is a small client-side mod that adds a dynamic velocity blur effect based on your movement speed. Experience speed like never before.
+        </p>
+
+        <div class="alert-box" style="max-width: 800px; margin-top: 2rem;">
+            <div class="alert-title">Client-Side Only</div>
+            <p>This mod works entirely on the client. You do not need to install it on the server.</p>
+        </div>
+        
+        <a href="#" class="cta-btn">
+            Download Mod
+        </a>
+    </header>
+
+    <section id="about">
+        <h2 class="section-header">Mod Overview</h2>
+        <p>
+            Enhance your gameplay immersion with dynamic visuals. The faster you move, the stronger the blur effect becomes, giving you a true sense of velocity.
+        </p>
+        
+        <!-- Video Embed -->
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/Oe4eZmJHCoI" title="Velocity Blur Showcase" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <p>
+            Perfect for parkour, elytra flying, or simply sprinting through your world.
+        </p>
+    </section>
+
+    <section id="features">
+        <h2 class="section-header">System Features</h2>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Visual Mechanics</h3>
+                <ul>
+                    <li><strong>Dynamic Blur:</strong> Motion blur that scales automatically with player speed.</li>
+                    <li><strong>Immersive FX:</strong> Subtle effects that don't obstruct gameplay but enhance the feeling of speed.</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>HUD Elements</h3>
+                <ul>
+                    <li><strong>Speedometer:</strong> Simple speed counter in the top-right corner.</li>
+                    <li><strong>Metrics:</strong> Displays speed in <span class="highlight">blocks/s</span>.</li>
+                    <li><strong>Optional:</strong> Can be toggled off in config.</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>Compatibility</h3>
+                <ul>
+                    <li><strong>Client-Side:</strong> Safe for multiplayer servers.</li>
+                    <li><strong>Performance:</strong> Lightweight implementation with minimal FPS impact.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="configuration">
+        <h2 class="section-header">Configuration</h2>
+        <p>Customize your experience through the mod settings.</p>
+        
+        <p>You can adjust the blur intensity, toggle the speed HUD, and fine-tune when the effect kicks in.</p>
+
+        <img src="https://i.ibb.co/xtsn1gCK/123.png" alt="Velocity Blur Configuration Menu" class="config-img">
+        
+        <p class="highlight">Tip: Access the config menu via the Mod Menu interface.</p>
+    </section>
+
+    <section id="faq">
+        <h2 class="section-header">F.A.Q.</h2>
+        
+        <div class="faq-item">
+            <div class="faq-q">Q: Do I need this on the server?</div>
+            <div class="faq-a">A: No. Velocity Blur is strictly a client-side mod. It works on any server.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-q">Q: Does it cause lag?</div>
+            <div class="faq-a">A: The impact is minimal on most modern systems. It uses efficient rendering techniques.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-q">Q: Can I turn off the numbers?</div>
+            <div class="faq-a">A: Yes, the speed HUD (blocks per second) is optional and can be disabled in the config.</div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Velocity Blur. All rights reserved.</p>
+        <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.5;">Not affiliated with Mojang Studios.</p>
+    </footer>
+
+</div>
+
+<script>
+    const particleContainer = document.getElementById('particles');
+    const particleCount = 30;
+
+    // Нові кольори для частинок (відтінки синього/блакитного)
+    const particleColors = ['#2678BF', '#85D3F2', '#AEEBF2', '#1F4E8C'];
+
+    for (let i = 0; i < particleCount; i++) {
+        let p = document.createElement('div');
+        p.classList.add('particle');
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.animationDuration = (Math.random() * 8 + 5) + 's';
+        p.style.animationDelay = (Math.random() * 5) + 's';
+        
+        let size = Math.random() * 4 + 2;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        
+        p.style.background = particleColors[Math.floor(Math.random() * particleColors.length)];
+        
+        particleContainer.appendChild(p);
+    }
+</script>
+
+</body>
+</html>

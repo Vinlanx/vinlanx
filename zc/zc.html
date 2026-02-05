@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zone Conquest | Tactical Objective Mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+    /* 
+       Palette provided:
+       Blue: #5983D9
+       Brown: #59463F
+       Dark Red: #8C2626
+       Bright Red: #F25252
+       Light Red: #F27979
+    */
+    --c-bg: #1a1615;         /* Darkened version of the brown/red for readability */
+    --c-text: #F2EBDC;       /* Kept off-white for contrast */
+    --c-dim: #59463F;        /* Brown - used for borders/dim text */
+    --c-accent: #F25252;     /* Bright Red - Main Accent */
+    --c-dark-accent: #8C2626;/* Dark Red - Buttons/Backgrounds */
+    --c-blue: #5983D9;       /* Blue - Secondary Accent */
+    --c-light-red: #F27979;  /* Light Red */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'VT323', monospace;
+    overflow-x: hidden;
+    font-size: 1.3rem;
+    position: relative;
+    line-height: 1.5;
+}
+
+/* FILM GRAIN & EFFECTS */
+.film-grain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 999;
+}
+
+.film-grain::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px);
+    background-size: 100% 4px;
+    pointer-events: none;
+}
+
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 50%, rgba(10, 8, 8, 0.8) 100%);
+    z-index: 998;
+    pointer-events: none;
+}
+
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--c-dim);
+    opacity: 0;
+    animation: floatUp 10s infinite linear;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
+    20% { opacity: 0.5; }
+    80% { opacity: 0.3; }
+    100% { transform: translateY(-10vh) translateX(20px) rotate(45deg); opacity: 0; }
+}
+
+/* LAYOUT */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+header {
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: center;
+    text-align: center;
+    margin-bottom: 4rem;
+    position: relative;
+    border-bottom: 2px solid var(--c-dim);
+    padding-top: 8rem; 
+    padding-bottom: 2rem;
+}
+
+.back-btn-container {
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    z-index: 20;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    color: var(--c-dim);
+    text-decoration: none;
+    font-size: 1.4rem;
+    background: transparent;
+    border: 1px solid var(--c-dim);
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.back-btn:hover {
+    color: var(--c-text);
+    border-color: var(--c-accent);
+    background: rgba(140, 38, 38, 0.1);
+}
+
+.logo-img {
+    width: 180px;
+    height: 180px;
+    border: 4px solid var(--c-dim);
+    box-shadow: 0 0 20px rgba(89, 70, 63, 0.5);
+    margin-bottom: 2rem;
+    background: #000;
+    border-radius: 0; 
+}
+
+h1 {
+    font-size: 4rem;
+    color: var(--c-accent);
+    text-transform: uppercase;
+    text-shadow: 4px 4px 0px rgba(0,0,0,0.8);
+    line-height: 0.9;
+    margin-bottom: 0.5rem;
+    letter-spacing: 3px;
+}
+
+.sub-title {
+    font-size: 2rem;
+    color: var(--c-dim);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.hero-desc {
+    max-width: 700px;
+    font-size: 1.4rem;
+    color: var(--c-text);
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px #000;
+    opacity: 0.9;
+}
+
+.cta-btn {
+    display: inline-block;
+    background: var(--c-dark-accent);
+    color: var(--c-text);
+    font-size: 1.8rem;
+    padding: 1rem 3rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: 2px solid var(--c-accent);
+    box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
+    transition: all 0.2s;
+    margin-top: 1rem;
+}
+
+.cta-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+    background: var(--c-accent);
+}
+
+.cta-btn:active {
+    transform: translateY(6px);
+    box-shadow: 0 0 0 rgba(0,0,0,0.5);
+}
+
+/* SECTIONS */
+section {
+    margin-bottom: 5rem;
+    background: rgba(30, 27, 26, 0.6);
+    border-left: 4px solid var(--c-dim);
+    padding: 2rem;
+    position: relative;
+}
+
+.section-header {
+    color: var(--c-accent);
+    font-size: 2.5rem;
+    border-bottom: 2px dashed var(--c-dim);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+p {
+    margin-bottom: 1.2rem;
+    color: var(--c-text);
+}
+
+.highlight {
+    color: var(--c-accent);
+    font-weight: bold;
+}
+.highlight-blue {
+    color: var(--c-blue);
+    font-weight: bold;
+}
+
+/* MEDIA & ALERTS */
+.alert-box {
+    border: 2px solid var(--c-accent);
+    background: rgba(140, 38, 38, 0.15);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.alert-title {
+    color: var(--c-accent);
+    font-weight: bold;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+}
+
+.alert-title::before {
+    content: "WARNING";
+    display: inline-block;
+    background: var(--c-accent);
+    color: #fff;
+    padding: 0 10px;
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+.media-frame {
+    width: 100%;
+    border: 2px solid var(--c-dim);
+    margin: 1.5rem 0;
+    background: #000;
+}
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    border: 2px solid var(--c-dim);
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* GRID & CARDS */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.feature-card {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--c-dim);
+    padding: 1.5rem;
+    transition: transform 0.3s;
+}
+
+.feature-card:hover {
+    border-color: var(--c-accent);
+    transform: translateY(-5px);
+}
+
+.feature-card h3 {
+    color: var(--c-text);
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--c-dim);
+    padding-bottom: 0.5rem;
+}
+
+.feature-card ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.feature-card li {
+    margin-bottom: 0.8rem;
+    position: relative;
+    padding-left: 1.5rem;
+    color: #ccc;
+    font-size: 1.1rem;
+}
+
+.feature-card li::before {
+    content: "■";
+    position: absolute;
+    left: 0;
+    color: var(--c-accent);
+    font-size: 0.8rem;
+    top: 5px;
+}
+
+/* COMMANDS */
+.command-block {
+    background: #121010;
+    border: 1px solid var(--c-dim);
+    padding: 1rem;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 1rem;
+    color: #ccc;
+    font-size: 1rem;
+    overflow-x: auto;
+}
+
+.command-cmd {
+    color: var(--c-accent);
+    font-weight: bold;
+}
+
+.command-desc {
+    color: var(--c-dim);
+    font-size: 0.9rem;
+    display: block;
+    margin-top: 0.3rem;
+}
+
+/* FAQ & FOOTER */
+.faq-item {
+    margin-bottom: 1.5rem;
+}
+
+.faq-q {
+    font-size: 1.4rem;
+    color: var(--c-text);
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.faq-a {
+    color: var(--c-dim);
+    border-left: 2px solid var(--c-dim);
+    padding-left: 1rem;
+}
+
+.credits-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.credit-item {
+    text-align: center;
+    border: 1px solid var(--c-dim);
+    padding: 1.5rem;
+    min-width: 250px;
+    background: rgba(0,0,0,0.2);
+}
+
+.credit-role {
+    color: var(--c-dim);
+    text-transform: uppercase;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.credit-name {
+    color: var(--c-text);
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+}
+
+.social-tiny {
+    display: block;
+    font-size: 1rem;
+    color: var(--c-accent);
+    text-decoration: none;
+    margin-bottom: 5px;
+}
+
+footer {
+    text-align: center;
+    padding: 3rem 0;
+    color: var(--c-dim);
+    font-size: 1rem;
+    border-top: 1px solid var(--c-dim);
+    background: #121010;
+    margin-top: 4rem;
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 3rem; }
+    .sub-title { font-size: 1.5rem; }
+    .container { padding: 1rem; }
+    .cta-btn { font-size: 1.4rem; padding: 1rem 2rem; }
+    header { min-height: auto; padding-top: 6rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="film-grain"></div>
+<div class="vignette"></div>
+<div class="particles" id="particles"></div>
+
+<div class="container">
+    
+    <header>
+        <div class="back-btn-container">
+            <a href="https://vinlanx.github.io/vinlanx/" class="back-btn">&lt; Return to Base</a>
+        </div>
+
+        <img src="https://media.forgecdn.net/avatars/thumbnails/1564/818/256/256/639015140198850540.jpg" alt="Zone Conquest Logo" class="logo-img">
+        
+        <h1>Zone Conquest</h1>
+        <div class="sub-title">Attack. Defend. Dominate.</div>
+        
+        <p class="hero-desc">
+            A structured, team-based objective mode where <span class="highlight">Red Attackers</span> must conquer zones sequentially while <span class="highlight-blue">Blue Defenders</span> hold the line.
+        </p>
+
+        <div class="alert-box" style="max-width: 800px; margin-top: 2rem;">
+            <div class="alert-title">Important Capture Rules</div>
+            <p><strong>1. Tug of War:</strong> One shared progress bar (<span class="highlight">Red</span> ↔ Neutral ↔ <span class="highlight-blue">Blue</span>).</p>
+            <p><strong>2. Sequential Lock:</strong> Red must capture points in order (1 → 2 → 3). Once fully captured, a point is <span class="highlight">LOCKED</span> and cannot be retaken by Blue.</p>
+            <p><strong>3. Empty Point:</strong> Progress freezes if no players are inside the zone.</p>
+        </div>
+        
+        <a href="#" class="cta-btn">
+            Download Mod
+        </a>
+    </header>
+
+    <section id="about">
+        <h2 class="section-header">Operational Overview</h2>
+        <div class="video-container">
+            <iframe src="http://www.youtube.com/embed/5O9F-2Fwi6c" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p>
+            Zone Conquest is a competitive mode where teamwork, positioning, and space control matter more than raw combat.
+        </p>
+        <p>
+            The outcome depends on maintaining a player advantage inside capture zones. More allies equals faster capture. If numbers are equal, progress pauses.
+        </p>
+        <p>
+            <span class="highlight">Win Conditions:</span> Red wins by capturing all points. Blue wins if the match timer expires.
+        </p>
+    </section>
+
+    <section id="visuals">
+        <h2 class="section-header">Visual Intelligence</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Capture Mechanics</h3>
+                <img src="https://i.ibb.co/gFJG4j1w/1.gif" alt="Capture Progress" class="media-frame" style="border-color: var(--c-accent);">
+                <p>The HUD shows the tug-of-war status between teams.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Zone Setup</h3>
+                <img src="https://i.ibb.co/x8KfS08c/2025-10-31-13-23-45.png" alt="Zone Configuration" class="media-frame" style="border-color: var(--c-blue);">
+                <p>Visible boundaries indicate where players must stand to contest.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="features">
+        <h2 class="section-header">Game States & Rules</h2>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Match Cycle</h3>
+                <ul>
+                    <li><strong>IDLE:</strong> Match not running (Grey).</li>
+                    <li><strong>LOBBY WAIT:</strong> Waiting for players after start (White).</li>
+                    <li><strong>WAITING:</strong> Pre-start phase. Red to waiting room, Blue to base (Yellow).</li>
+                    <li><strong>PLAYING:</strong> Active combat and capturing (Green).</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>Respawn System</h3>
+                <ul>
+                    <li>If you die during PLAYING, you are sent to the <strong>Wait Room</strong>.</li>
+                    <li>After <strong>30 seconds</strong>, you redeploy to your Team Base.</li>
+                    <li>Respawn timers are handled server-side.</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>Economy (Optional)</h3>
+                <ul>
+                    <li>Supports <strong>Lightman’s Currency</strong>.</li>
+                    <li>Owning teams receive periodic coin payouts.</li>
+                    <li>Admins can toggle payouts for tournament play.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-to-play">
+        <h2 class="section-header">Admin Field Manual</h2>
+        <p><strong>1. Zone Creation:</strong> Use <code>/setpointzc</code> to define rectangular capture areas (IDs 1-20).</p>
+        <p><strong>2. Infrastructure:</strong> Set up Bases, Waiting Rooms, and the Lobby using location commands.</p>
+        <p><strong>3. Teams:</strong> Create vanilla teams with "Red" or "Blue" in the name. Add players via <code>/team join</code>.</p>
+        
+        <h3 style="margin-top: 2rem; color: var(--c-accent);">Player Keybinds</h3>
+        <ul style="list-style: none; margin-top: 0.5rem;">
+            <li><span class="highlight">O</span> : Open Info Screen</li>
+            <li><span class="highlight">TAB (Hold)</span> : View Match Timer</li>
+        </ul>
+    </section>
+
+    <section id="commands">
+        <h2 class="section-header">Command Terminal</h2>
+        <p><em>Requires OP Permission Level ≥ 2</em></p>
+
+        <h3 style="color: var(--c-dim); margin: 1rem 0;">Zone Management</h3>
+        <div class="command-block">
+            <span class="command-cmd">/setpointzc &lt;id&gt; &lt;w&gt; &lt;l&gt; &lt;time&gt;</span>
+            <span class="command-desc">Create a point. ID: 1-20, Time in seconds.</span>
+        </div>
+        <div class="command-block">
+            <span class="command-cmd">/listpointszc</span>
+            <span class="command-desc">Open interactive list to Teleport or Delete points.</span>
+        </div>
+
+        <h3 style="color: var(--c-dim); margin: 1rem 0;">Match Control</h3>
+        <div class="command-block">
+            <span class="command-cmd">/startgame [minutes]</span>
+            <span class="command-desc">Initiate match (default 30 mins).</span>
+        </div>
+        <div class="command-block">
+            <span class="command-cmd">/stopgame [returnplayers]</span>
+            <span class="command-desc">Stop match and reset timer.</span>
+        </div>
+
+        <h3 style="color: var(--c-dim); margin: 1rem 0;">Locations</h3>
+        <div class="command-block">
+            <span class="command-cmd">/setbasered | /setbaseblue</span>
+            <span class="command-desc">Set team spawn bases.</span>
+        </div>
+        <div class="command-block">
+            <span class="command-cmd">/setwaitroomred | /setwaitroomblue</span>
+            <span class="command-desc">Set death/waiting rooms.</span>
+        </div>
+    </section>
+
+    <section id="faq">
+        <h2 class="section-header">F.A.Q.</h2>
+        
+        <div class="faq-item">
+            <div class="faq-q">Q: How are teams detected?</div>
+            <div class="faq-a">A: By vanilla team name. Any name containing "red" or "blue" (case-insensitive) is automatically assigned.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-q">Q: Can I disable captures temporarily?</div>
+            <div class="faq-a">A: Yes, use <code>/capturestatuszc stop</code> and <code>/capturestatuszc resume</code>.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-q">Q: Does the world remember game state?</div>
+            <div class="faq-a">A: Yes. The mod creates <code>zoneconquest_autostart.json</code>. If the server restarts during a match, it will attempt to resume if IDLE.</div>
+        </div>
+    </section>
+
+    <section id="credits">
+        <h2 class="section-header">Acknowledgments</h2>
+        <div class="credits-container">
+            <div class="credit-item">
+                <div class="credit-role">Hud and Design</div>
+                <div class="credit-name">Village_</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Zone Conquest Mod.</p>
+        <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.5;">Not affiliated with Mojang Studios.</p>
+    </footer>
+
+</div>
+
+<script>
+    const particleContainer = document.getElementById('particles');
+    const particleCount = 35;
+    // Palette: Blue, Bright Red, Light Red
+    const colors = ['#5983D9', '#F25252', '#F27979'];
+
+    for (let i = 0; i < particleCount; i++) {
+        let p = document.createElement('div');
+        p.classList.add('particle');
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.animationDuration = (Math.random() * 8 + 5) + 's';
+        p.style.animationDelay = (Math.random() * 5) + 's';
+        
+        let size = Math.random() * 4 + 2;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        
+        particleContainer.appendChild(p);
+    }
+</script>
+
+</body>
+</html>
