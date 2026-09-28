@@ -375,6 +375,19 @@
         color: #fff;
     }
 
+    .btn-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-top: auto;
+    }
+
+    .btn-row .btn {
+        margin-top: 0;
+        font-size: 1.1rem;
+        padding: 10px 8px;
+    }
+
     .locked {
         filter: grayscale(100%) opacity(0.8);
         position: relative;
@@ -477,7 +490,7 @@
             <h1>Vinlanx</h1>
             <div class="subtitle">Minecraft Mod Developer</div>
             
-            <a href="https://linktr.ee/Vinlanx" target="_blank" class="social-link">View Linktree</a>
+            <a href="sm/sm.html" class="social-link">My Socials</a>
         </div>
 
         <div class="scene-container">
@@ -505,7 +518,10 @@
                 <p class="card-desc">
                     Echoes of the Battlefield. An add-on for many weapon mods that adds realistic distant gunfire and artillery sounds, creating echo effects and a deeply immersive battlefield atmosphere.
                 </p>
-                <a href="gunfire\gunfire.html" class="btn">View</a>
+                <div class="btn-row">
+                    <a href="https://www.curseforge.com/minecraft/mc-mods/gunfire-overhaul-echoes-of-the-battlefield" class="btn" target="_blank" rel="noopener noreferrer">CurseForge</a>
+                    <a href="https://modrinth.com/mod/gunfire-overhaul-echoes-of-the-battlefield" class="btn" target="_blank" rel="noopener noreferrer">Modrinth</a>
+                </div>
             </div>
 
             <div class="card">
@@ -519,37 +535,38 @@
                 <p class="card-desc">
                     A new level of destruction. Overhauls Minecraft explosions for realism. Unique sounds based on distance, tangible tremors, plasma sparks, and fire clouds. Experience destructive power like never before.
                 </p>
-                <a href="eo/eo.html" class="btn">View</a>
+                <div class="btn-row">
+                    <a href="https://www.curseforge.com/minecraft/mc-mods/explosion-overhaul-a-new-level-of-destruction" class="btn" target="_blank" rel="noopener noreferrer">CurseForge</a>
+                    <a href="https://modrinth.com/mod/explosion-overhaul-a-new-level-of-destruction" class="btn" target="_blank" rel="noopener noreferrer">Modrinth</a>
+                </div>
             </div>
 
-            <div class="card locked">
+            <div class="card">
                 <div class="card-header">
-                  <!-- <img src="?" alt="Visual Mod" class="card-logo"> -->
+                    <img src="https://media.forgecdn.net/avatars/thumbnails/2057/707/64/64/639254417225611841.png" alt="Luxium" class="card-logo">
                     <div>
-                        <div class="card-title">Visual Mod</div>
-                        <div class="status-badge">DEV</div>
+                        <div class="card-title">Luxium</div>
+                        <div class="status-badge">Released</div>
                     </div>
                 </div>
                 <p class="card-desc">
-                    Soon
+                    Let there be light. A performance-focused graphics mod that makes Minecraft look better without turning it into a slideshow.
                 </p>
-                <a class="btn" aria-disabled="true" tabindex="-1">View</a>
-                <div class="stamp">DEV</div>
+                <a href="https://www.curseforge.com/minecraft/mc-mods/luxium" class="btn" target="_blank" rel="noopener noreferrer">CurseForge</a>
             </div>
 
-            <div class="card locked">
+            <div class="card">
                 <div class="card-header">
-                   <!-- <img src="?" alt="Lib Mod" class="card-logo"> -->
+                    <img src="https://cdn.modrinth.com/data/M2EV0iga/c9476a8710bdca3121b358bb59c3e88c2e8768dd_96.webp" alt="Vinconfig Lib" class="card-logo">
                     <div>
-                        <div class="card-title">Lib</div>
-                        <div class="status-badge">DEV</div>
+                        <div class="card-title">Vinconfig Lib</div>
+                        <div class="status-badge">Released</div>
                     </div>
                 </div>
                 <p class="card-desc">
-                    Soon
+                    A mod library that allows you to create GUI configs for other mods.
                 </p>
-                <a class="btn" aria-disabled="true" tabindex="-1">View</a>
-                <div class="stamp">DEV</div>
+                <a href="https://modrinth.com/mod/vinconfiglib" class="btn" target="_blank" rel="noopener noreferrer">Modrinth</a>
             </div>
 
             <div class="card">
@@ -563,7 +580,10 @@
                 <p class="card-desc">
                     Tactical utility mod. This framework allows you to create strategic points within your world and capture them, adding a layer of territory control to gameplay.
                 </p>
-                <a href="coz/coz.html" class="btn">View</a>
+                <div class="btn-row">
+                    <a href="https://www.curseforge.com/minecraft/mc-mods/capture-of-zones" class="btn" target="_blank" rel="noopener noreferrer">CurseForge</a>
+                    <a href="https://modrinth.com/mod/capture-of-zones" class="btn" target="_blank" rel="noopener noreferrer">Modrinth</a>
+                </div>
             </div>
            
                 <div class="card">
@@ -577,7 +597,10 @@
                     <p class="card-desc">
                         Velocity Blur is a small client-side mod that adds a dynamic velocity blur effect based on your movement speed. Experience speed like never before.
                     </p>
-                    <a href="vb/vb.html" class="btn">View</a>
+                    <div class="btn-row">
+                        <a href="https://www.curseforge.com/minecraft/mc-mods/velocity-blur" class="btn" target="_blank" rel="noopener noreferrer">CurseForge</a>
+                        <a href="https://modrinth.com/mod/velocity-blur" class="btn" target="_blank" rel="noopener noreferrer">Modrinth</a>
+                    </div>
                 </div>
 
             <div class="card">
@@ -591,14 +614,31 @@
                 <p class="card-desc">
                     Tactical Battles. The next evolution of zone control warfare. Information regarding this project is currently restricted. Prepare for deployment soon.
                 </p>
-                <a href="zc/zc.html" class="btn">View</a>
+                <div class="btn-row">
+                    <a href="https://www.curseforge.com/minecraft/mc-mods/zone-conquest-tactical-battles" class="btn" target="_blank" rel="noopener noreferrer">CurseForge</a>
+                    <a href="https://modrinth.com/mod/zone-conquest-tactical-battles" class="btn" target="_blank" rel="noopener noreferrer">Modrinth</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <img src="https://cdn.modrinth.com/data/spS41aGI/b4d1eb031735cc7ecf8051399a48b38e65e1e02d_96.webp" alt="Natural Camera" class="card-logo">
+                    <div>
+                        <div class="card-title">Natural Camera</div>
+                        <div class="status-badge">Released</div>
+                    </div>
+                </div>
+                <p class="card-desc">
+                    A mod that changes the first-person camera, making it more realistic.
+                </p>
+                <a href="https://modrinth.com/mod/vinconfiglib" class="btn" target="_blank" rel="noopener noreferrer">Modrinth</a>
             </div>
 
         </div>
     </section>
 
     <footer>
-        <p>© 2025 Vinlanx. All rights reserved.</p>
+        <p>© 2026 Vinlanx. All rights reserved.</p>
     </footer>
 </div>
 
